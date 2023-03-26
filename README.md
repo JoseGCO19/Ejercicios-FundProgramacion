@@ -1,2 +1,2 @@
 # Ejercicios-FundProgramacion
-Repositorio con los ejercicios mandados en fundamentos de programación
+Repositorio con los ejercicios y talleres mandados en fundamentos de programación
