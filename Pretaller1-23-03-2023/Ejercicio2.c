@@ -92,7 +92,6 @@ int main(){
     while(ACtime){
         ACtime=fechacheck(&Add,&Amm,&Aaa);
     }
-    printf("%d %d %d\n",Add,Amm,Aaa);
     printf("Introduzca la cantidad de pacientes de la clinica ABC: ");
     scanf("%d",&n);
     n=Checknegativo(n);
@@ -161,5 +160,4 @@ int main(){
     printf("La cantidad de pacientes mayores de edad es: %d\n",C_May);
     printf("La cantidad de pacientes menores de edad es: %d\n",C_Men);
     printf("El costo total de los pacientes es: %f\n",t_cost);
-    printf("%d\n",edad);
 }
