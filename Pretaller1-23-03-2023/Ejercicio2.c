@@ -25,7 +25,7 @@ int Checknegativo(int a){
 
 int fechacheck(int *d,int *m,int *a){
     int band=1;
-    while(((*d<1)||(*d>=31))||((*m<1)||(*m>12)||(*a<0))){
+    while(((*d<1)||(*d>31))||((*m<1)||(*m>12)||(*a<0))){
         printf("ERROR: Fecha inválida, vuelva a intentarlo\n");
         printf("Introduzca el día (desde 1 hasta 31): ");
         scanf("%d",d);
