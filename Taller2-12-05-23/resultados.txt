@@ -1,0 +1,8 @@
+1		Leonardo		8.333333
+2		Miguel		7.333333
+3		Victoria		6.666667
+4		Andrés		6.333333
+5		Miranda		6.000000
+6		Jose		5.666667
+7		Alberto		5.333333
+8		Olivia		4.000000
