@@ -326,7 +326,7 @@ int modificar(){
                             break;
                     }
                     escritorarchivo(i,p);
-                    printf("\nEl Trabajador Pertnece ahora al departamento %s\n",worker[numb].departamento);
+                    printf("\nEl Trabajador Pertenece ahora al departamento %s\n",worker[numb].departamento);
                     break;
                 case 4:
                     do{
@@ -530,7 +530,7 @@ char salid(char s){
     printf("\n\t(1)CI (2)Departamento (3)Cargo (4)Trabajador con mayor y menor sueldo\n");
     printf("\n\t: ");
     do{
-        scanf("%d",&op);
+        scanf("%d",&op);//Elige opcion del switch
     }while(op<1||op>4);
 
     switch(op){
@@ -539,7 +539,7 @@ char salid(char s){
         do{
             scanf("%d",&ci);
         }while(ci<1);
-        for(i=0;i<cant_t&&band==0;i++){
+        for(i=0;i<cant_t&&band==0;i++){//Busca la cedula, se detiene al encontrarla(band=1) o al alcanzar el maximo de trabajadores(cant_t)
             if(worker[i].ci==ci){
                 printf("\n\tEl trabajador se llama %s %s\n",worker[i].nombre,worker[i].apellido);
                 printf("\n\tTrabaja en el departamento de %s con el cargo de %s\n",worker[i].departamento,worker[i].cargo);
@@ -548,7 +548,7 @@ char salid(char s){
                 band=1;
             }
         }
-        if(band==0){
+        if(band==0){//Si esto se cumple, evidentemente es porque no se encontro la CI
             printf("\n\tLa CI indicada no esta asociada a ningun trabajador de la empresa\n");
         }
         break;
@@ -558,7 +558,7 @@ char salid(char s){
         do{
             scanf("%d",&dp);
         }while(dp<1||dp>6);
-        switch(dp){
+        switch(dp){//Se llama a una funcion encargada de buscar el departamento ESCOJIDO
             case 1:
             buscar_depa("RRHH");
             break;
@@ -588,7 +588,7 @@ char salid(char s){
         do{
             scanf("%d",&cg);
         }while(cg<1||cg>6);
-        switch(cg){
+        switch(cg){//Se llama a una funcion para buscar el cargo ingresado
             case 1:
             buscar_cargo("Gerente");break;
             case 2:
@@ -605,21 +605,26 @@ char salid(char s){
             break;
         }
         break;
-        case 4:
+        case 4://Calcula el mayor y menor sueldo, muestra si es compartido por varios
             int mayor_sueldo=0,menor_sueldo=0,i;
             for(i=0;i<cant_t;i++){
-                if(worker[i].sueldo==0){continue;}
-                if(i==0){
-                    menor_sueldo=worker[i].sueldo;
+                if(i==0){//Inicializa el sueldo minimo con cualquier valor diferente de 0
+                    register int k=0;//Variable para mover el indice
+                    do{
+                        menor_sueldo=worker[i+k].sueldo;//Se asigna sueldo minimo ACTUAL
+                        k++;//Se incrementa para ir al siguiente trabajador
+                    }while((menor_sueldo==0)&&((i+k)<cant_t));//Si el sueldo asignado es igual a 0 se repite (0 indica que el trabajador fue "eliminado")
                 }
-                if(worker[i].sueldo>mayor_sueldo){
+                if(worker[i].sueldo==0){continue;}//Se salta la iteracion para no tomar en cuenta los trabajadores eliminados (sueldo=0)
+
+                if(worker[i].sueldo>mayor_sueldo){//Asignacion de mayor sueldo
                     mayor_sueldo=worker[i].sueldo;
                 }
-                if(worker[i].sueldo<menor_sueldo&&(worker[i].sueldo!=0)){
+                if(worker[i].sueldo<menor_sueldo){//Asignacion de menor sueldo
                     menor_sueldo=worker[i].sueldo;
                 }
             }
-            for(i=0;i<cant_t;i++){
+            for(i=0;i<cant_t;i++){//Busca y muestra por pantalla todos los trabajadores que coincidan con el mayor sueldo registrado
                 if(worker[i].sueldo==mayor_sueldo){
                     printf("\n\tEl trabajador con mayor sueldo (%d) es: \n",mayor_sueldo);
                     printf("\n\tEl trabajador se llama %s %s\n",worker[i].nombre,worker[i].apellido);
@@ -629,7 +634,7 @@ char salid(char s){
                 }
             }
             printf("\n\n");
-            for(i=0;i<cant_t;i++){
+            for(i=0;i<cant_t;i++){//Lo mismo de arriba pero con el menor sueldo
                 if(worker[i].sueldo==menor_sueldo){//defecto por worker extra==0
                     printf("\n\tEl trabajador con menor sueldo (%d) es: \n",menor_sueldo);
                     printf("\n\tEl trabajador se llama %s %s\n",worker[i].nombre,worker[i].apellido);
@@ -649,7 +654,7 @@ char salid(char s){
     do{
         __fpurge(stdin);
         scanf("%c",&s);
-    }while((s!='s')&&(s!='S'));
+    }while((s!='s')&&(s!='S'));//Para volver al menu se ingresa s o S
     __fpurge(stdin);
     return s;
 }
@@ -660,7 +665,7 @@ void llenar(){
 
     f=fopen("Trabajadores.in","r");
 
-    for(i=0;i<cant_t;i++){
+    for(i=0;i<cant_t;i++){//Llena todas las estructuras anteriormente creadas con los datos del fichero
         fscanf(f,"%d",&worker[i].ci);
         fscanf(f,"%s",worker[i].nombre);
         fscanf(f,"%s",worker[i].apellido);
@@ -672,21 +677,21 @@ void llenar(){
 
     fclose(f);
 }
-void buscar_cargo(char v[]){
+void buscar_cargo(char v[]){//recibe el cargo a buscar
     int i,cantt2=0,total_sueldo2=0,band=0;
     FILE *cargo;
 
-    cargo=fopen("Cargo.txt","w");
+    cargo=fopen("Cargo.txt","w");//Se abre fichero donde guardar los ocupantes del cargo
 
-    for(i=0;i<cant_t;i++){
-        if(strcmp(worker[i].cargo,v)==0){
-            cantt2++;
-            total_sueldo2+=worker[i].sueldo;
+    for(i=0;i<cant_t;i++){//Busca coincidencias
+        if(strcmp(worker[i].cargo,v)==0){//Cargo igual al que se busca
+            cantt2++;//Contador de cantidad de ocupantes del cargo
+            total_sueldo2+=worker[i].sueldo;//Suma total de todos los ocupantes
             fprintf(cargo,"%d %s %s %s %s %s %d\n",worker[i].ci,worker[i].nombre,worker[i].apellido,worker[i].departamento,worker[i].cargo,worker[i].fecha,worker[i].sueldo);
-            band=1;
+            band=1;//Verificador de éxito
         }
     }
-    if(cantt2==1){
+    if(cantt2==1){//Singular y plural segun el resultado
         printf("\n\tHay %d trabajador con el cargo\n",cantt2);
     }else{
         printf("\n\tHay %d trabajadores con el cargo\n",cantt2);
@@ -707,8 +712,8 @@ char salif(char s){
     do{
         scanf("%d",&ci);
     }while(ci<1);
-    for(i=0;(i<cant_t)&&(band==0);i++){
-        if(ci==worker[i].ci){
+    for(i=0;(i<cant_t)&&(band==0);i++){//Se busca CI
+        if(ci==worker[i].ci){//Compara y para de iterar al hallar la CI
             band=1;
             printf("\n\tEl trabajador a eliminar es el siguiente: \n");
             printf("\n\tEl trabajador se llama %s %s\n",worker[i].nombre,worker[i].apellido);
@@ -717,32 +722,32 @@ char salif(char s){
             printf("\n\tIngreso en la fecha %s \n",worker[i].fecha);
         }
     }
-    if(band){
+    if(band){//Si se encontro pregunta si esta seguro de eliminar
         printf("\n\tEsta seguro de eliminar al trabajador anteriormente mostrado? (Si/No): \n\t");
         do{
-            fgets(veri,3,stdin);
+            fgets(veri,3,stdin);//Lee desicion
         }while(((strcmp(veri,"si")!=0)&&(strcmp(veri,"no")!=0))&&((strcmp(veri,"Si")!=0)&&(strcmp(veri,"No")!=0)));
-        if((strcmp(veri,"si")==0)||(strcmp(veri,"Si")==0)){
+        if((strcmp(veri,"si")==0)||(strcmp(veri,"Si")==0)){//Comprueba
             FILE *f;
             FILE *ex;
             char motivo[10];
             int op,dd,mm,aa;
-            ex=fopen("extrabajadores.txt","a");
-            f=fopen("Trabajadores.in","w");
-            fflush(f);
+            ex=fopen("extrabajadores.txt","a");//Abre fichero de extrabajadores
+            f=fopen("Trabajadores.in","w");//Abre fichero base
+            fflush(f);//Limpia el fichero base
             printf("\n\t1:Traslado 2:Renuncia 3:Despido 4:Otro\n");
             printf("\n\tIngrese Nr del motivo\n\t:");
             do{
                 scanf("%d",&op);
             }while((op<1)||(op>4));
-            switch(op){
+            switch(op){//Asigna motivo escojido
                 case 1:strcpy(motivo,"Traslado");break;
                 case 2:strcpy(motivo,"Renuncia");break;
                 case 3:strcpy(motivo,"Despido");break;
                 case 4:strcpy(motivo,"Otro");break;
             }
             printf("\n\tIntroduzca fecha (dia/mes/año)\n");
-            do{
+            do{//Fechas
                 printf("\tIngrese dia\n\t:");
                 scanf("%d",&dd);
                 printf("\tIngrese mes\n\t:");
@@ -750,15 +755,15 @@ char salif(char s){
                 printf("\tIngrese año\n\t:");
                 scanf("%d",&aa);
             }while((dd<1||dd>31)||(mm<1||mm>12)||(aa<2000||aa>3000));
-            for(i=0;i<cant_t;i++){
-                if((ci!=worker[i].ci)&&(worker[i].ci!=0)){
+            for(i=0;i<cant_t;i++){//Se mueve por todas las estructuras
+                if((ci!=worker[i].ci)&&(worker[i].ci!=0)){//Imprime todas en el fichero base menos la que se acaba de eliminar
                     if(i<(cant_t-1)){
                         fprintf(f,"%d %s %s %s %s %s %d\n",worker[i].ci,worker[i].nombre,worker[i].apellido,worker[i].departamento,worker[i].cargo,worker[i].fecha,worker[i].sueldo);
                     }
-                    else{
+                    else{//Para no imprimir un salto de linea al final
                         fprintf(f,"%d %s %s %s %s %s %d",worker[i].ci,worker[i].nombre,worker[i].apellido,worker[i].departamento,worker[i].cargo,worker[i].fecha,worker[i].sueldo);
                     }
-                }else{
+                }else{//Imprime y "elimina" de las estructuras el trabajador (se elimina en su totalidad al cerrar el programa)
                     if(worker[i].ci!=0){
                         fprintf(ex,"%d %s %s %s %s %s %d %s %d/%d/%d\n",worker[i].ci,worker[i].nombre,worker[i].apellido,worker[i].departamento,worker[i].cargo,worker[i].fecha,worker[i].sueldo,motivo,dd,mm,aa);
                         worker[i].ci=0;
@@ -771,10 +776,10 @@ char salif(char s){
             fclose(f);
             fclose(ex);
             printf("\n\tArchivo \"extrabajadores.txt\" creado/modificado\n");
-        }else{
+        }else{//Se elijió no hacer nada
             printf("\n\tNo se hará ningún cambio\n");
         }
-    }else{
+    }else{//No se encontro la CI
         printf("\n\tLa CI indicada no está asociada a ningun trabajador de la empresa\n");
     }
     printf("\n\tOperacion terminada\n");
@@ -782,27 +787,27 @@ char salif(char s){
     do{
         __fpurge(stdin);
         scanf("%c",&s);
-    }while((s!='s')&&(s!='S'));
+    }while((s!='s')&&(s!='S'));//Al menu
     __fpurge(stdin);
     return s;
 }
-void buscar_depa(char dep[]){
+void buscar_depa(char dep[]){//Busca el departamento que recibe como string
     int i;
     int cantt=0,total_sueldo=0;
     FILE *depa;
-    depa=fopen("departamento.txt","w");
+    depa=fopen("departamento.txt","w");//Abre archivo de departamento para mostrar los miembros
 
     for(i=0;i<cant_t;i++){
-        if(strcmp(worker[i].departamento,dep)==0){
-            cantt++;
-            total_sueldo+=worker[i].sueldo;
+        if(strcmp(worker[i].departamento,dep)==0){//Imprime las coincidencias en el fichero depa
+            cantt++;//Cuenta
+            total_sueldo+=worker[i].sueldo;//Suma del total acumulado
             fprintf(depa,"%d %s %s %s %s %s %d\n",worker[i].ci,worker[i].nombre,worker[i].apellido,worker[i].departamento,worker[i].cargo,worker[i].fecha,worker[i].sueldo);                
         }
     }
-    if(cantt>1){
+    if(cantt>1){//Plural y singular por estetica
         printf("\n\tHay %d trabajadores en el departamento\n",cantt);
     }else{
-        if(cantt==0){
+        if(cantt==0){//Si no hubo ningun trabajador
             printf("\n\tNo Hay trabajadores en el departamento\n");
         }else{
             printf("\n\tHay %d trabajador en el departamento\n",cantt);
@@ -979,7 +984,7 @@ void Ingresar(){
     }    
     fclose(fichero);
 }
-int veri(int ci){
+int veri(int ci){//Verifica que la CI ingresada no esté ya registrada
     int i,band=0;
 
     for(i=0;i<cant_t;i++){
